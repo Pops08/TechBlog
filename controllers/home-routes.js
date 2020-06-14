@@ -54,7 +54,8 @@ router.get('/', (req, res) => {
             //res.render('homepage', { posts });
             res.render('homepage', {
                 posts,
-                loggedIn: req.session.loggedIn
+                loggedIn: req.session.loggedIn,
+                username:req.session.username
             });
         })
         .catch(err => {
@@ -70,6 +71,54 @@ router.get('/login', (req, res) => {
     }
 
     res.render('login');
+});
+
+router.get('/dashboard', (req, res) => {
+    if (!req.session.loggedIn) {
+        res.redirect('/login');
+        return;
+    }
+    Post.findAll({
+        where:{
+            user_id: req.session.user_id
+        },
+            attributes: [
+                'id',
+                'post_content',
+                'title',
+                'created_at'
+            ],
+            include: [
+                /*{
+                  model: Comment,
+                  attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                  include: {
+                    model: User,
+                    attributes: ['username']
+                  }
+                },*/
+                {
+                    model: User,
+                    attributes: ['username']
+                }
+            ]
+        })
+        .then(dbPostData => {
+            const posts = dbPostData.map(post => post.get({
+                plain: true
+            }));
+            // pass a single post object into the homepage template
+            //res.render('homepage', { posts });
+            res.render('dashboard', {
+                posts,
+                loggedIn: req.session.loggedIn,
+                username:req.session.username
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
 
 router.get('/post/:id', (req, res) => {
@@ -116,7 +165,8 @@ router.get('/post/:id', (req, res) => {
             //res.render('single-post', { post });
             res.render('single-post', {
                 post,
-                loggedIn: req.session.loggedIn
+                loggedIn: req.session.loggedIn,
+                username:req.session.username
             });
         })
         .catch(err => {

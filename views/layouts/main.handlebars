@@ -47,6 +47,9 @@
             </li>
             {{/if}}
           </ul>
+           {{#if loggedIn}}
+          <p class="nav-item">Welcome {{username}}!</p>
+          {{/if}}
         </div>
       </nav>
     </header>
