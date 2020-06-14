@@ -7,7 +7,8 @@ const {
 } = require('../models');
 
 router.get('/', (req, res) => {
-    res.render('newpost', { loggedIn: true, username: req.session.user });
-  });
+    res.render('signup');
+});
+
 
 module.exports = router;

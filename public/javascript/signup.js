@@ -18,11 +18,24 @@ async function signupFormHandler(event) {
   
       // check the response status
       if (response.ok) {
-        console.log('success');
+        const response = await fetch('/api/users/login', {
+            method: 'post',
+            body: JSON.stringify({
+              username,
+              password
+            }),
+            headers: { 'Content-Type': 'application/json' }
+          });
+      
+          if (response.ok) {
+            document.location.replace('/');
+          } else {
+            alert(response.statusText);
+          }
       } else {
         alert(response.statusText);
       }
     }
   }
-
-  document.querySelector('.signup-form').addEventListener('submit', signupFormHandler);
+  const signup = document.querySelector('#signupButton');
+  signup.addEventListener('click', signupFormHandler);
